@@ -2,7 +2,7 @@
 
 ## DEMO
 
-[@@HaxKVMArea_bot](https://t.me/HaxKVMArea_bot)
+[@HaxKVMArea_bot](https://t.me/HaxKVMArea_bot)
 
 ## 效果截图
 
