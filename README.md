@@ -1,5 +1,9 @@
 # Hax 库存查询 Telegram Bot
 
+## DEMO
+
+[@@HaxKVMArea_bot](https://t.me/HaxKVMArea_bot)
+
 ## 效果截图
 
 ![image.png](https://s2.loli.net/2021/12/26/bdvofKVANuFiMkc.png)
