@@ -38,8 +38,8 @@ def getWebpage():
     eumid1 = allVPS[10].string.replace(' VPS', '')
     id1 = allVPS[11].string.replace(' VPS', '')
     usla = allVPS[12].string.replace(' VPS', '')
-    euovz = str(int(allVPS[13].string.replace(' VPS', '')) + int(allVPS[14].string.replace(' VPS', '')) + int(allVPS[15].string.replace(' VPS', '')) + int(allVPS[16].string.replace(' VPS', '')) + int(allVPS[17].string.replace(' VPS', '')))
-    all = allVPS[18].string.replace(' VPS', '')
+    euovz = allVPS[13].string.replace(' VPS', '')
+    all = allVPS[14].string.replace(' VPS', '')
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="您好，欢迎使用Hax库存查询监控bot！\n我能够帮你拿到hax官网上的库存信息，并把他们发送到你的Telegram会话中\nGithub: @isaka-blog    TG: @misakanetcn")
