@@ -10,6 +10,8 @@
 
 ## 安装教程
 
+先去botfather获取bot token，然后在vps内使用一下命令安装bot
+
 ```shell
 apt-get update
 apt-get upgrade -y
