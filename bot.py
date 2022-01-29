@@ -52,7 +52,7 @@ def ping(update, context):
 
 def get(update, context):
     getWebpage()
-    context.bot.send_message(chat_id=update.effective_chat.id, text="我获取到网页了！下面是Hax VPS目前库存情况：\nEU-1: "+eu1+"\nEU-2: "+eu2+"\nEU-3: "+eu3+"\nEU-4: "+eu4+"\nEU-5: "+eu5+"\nEU-6: "+eu6+"\nEU-7: "+eu7+"\nEU-8: "+eu8+"\nEU-9: "+eu9+"\nEU-10: "+eu10+"\nEU-Mid-1: "+eumid1+"\nID-1: "+id1+"\nSG1: "+sg1+"\nEU-OpenVZ: "+euovz+"\n开通的VPS: "+allvps+"\nNote: EU1-EU10、EU-Mid-1为KVM区，ID-1、US-LA2为LXC区")
+    context.bot.send_message(chat_id=update.effective_chat.id, text="我获取到网页了！下面是Hax VPS目前库存情况：\nEU-1: "+eu1+"\nEU-2: "+eu2+"\nEU-3: "+eu3+"\nEU-4: "+eu4+"\nEU-5: "+eu5+"\nEU-6: "+eu6+"\nEU-7: "+eu7+"\nEU-8: "+eu8+"\nEU-9: "+eu9+"\nEU-10: "+eu10+"\nEU-Mid-1: "+eumid1+"\nID-1: "+id1+"\nSG-1: "+sg1+"\nEU-OpenVZ: "+euovz+"\n开通的VPS: "+allvps+"\nNote: EU1-EU10、EU-Mid-1、ID-1和SG-1为KVM区")
 
 Start = CommandHandler('start', start)
 Ping = CommandHandler('ping', ping)
