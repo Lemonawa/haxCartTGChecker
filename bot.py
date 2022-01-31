@@ -1,45 +1,60 @@
+# -*- coding: utf-8 -*-
+import re
+from random import choice
 import requests
-from bs4 import BeautifulSoup as bs
-from fake_useragent import UserAgent
-import random
+from bs4 import BeautifulSoup
 from telegram.ext import Updater,CommandHandler
 
-updater = Updater("<YOUR_TOKEN>")
+updater = Updater("<YOUR BOT TOKEN>")
 dispatcher = updater.dispatcher
 
-def getParams():
-    ua = UserAgent()
-    params = dict(
-        headers = {'User-Agent': ua.random},
-    )
-    return params
+class Hax:
+    @staticmethod
+    def get_ua(brower_name):
+        url = "https://ghproxy.com/https://raw.githubusercontent.com/Oreomeow/checkinpanel/master/user-agent.json"
+        useragent = choice(requests.get(url).json()[brower_name])
+        return useragent
 
-def getSoup(url,encoding="utf-8",**params):
-    reponse = requests.get(url,**params)
-    reponse.encoding = encoding
-    soup = bs(reponse.text,'lxml')
-    return soup
+    def check(self, url):
+        headers = {
+            "User-Agent": self.get_ua("Safari"),
+            "Content-type": "application/json",
+        }
+        datas = requests.get(url, headers=headers).text
+        return datas
 
-def getWebpage():
-    global eu1,eu2,eu3,eu4,eu5,eu6,eu7,eu8,eu9,eu10,eumid1,euovz,id1,sg1,allvps
-    params = getParams()
-    soup = getSoup("https://hax.co.id/data-center/",**params)
-    allVPS = soup.find_all('h1')
-    eu1 = allVPS[0].string.replace(' VPS', '')
-    eu2 = allVPS[1].string.replace(' VPS', '')
-    eu3 = allVPS[2].string.replace(' VPS', '')
-    eu4 = allVPS[3].string.replace(' VPS', '')
-    eu5 = allVPS[4].string.replace(' VPS', '')
-    eu6 = allVPS[5].string.replace(' VPS', '')
-    eu7 = allVPS[6].string.replace(' VPS', '')
-    eu8 = allVPS[7].string.replace(' VPS', '')
-    eu9 = allVPS[8].string.replace(' VPS', '')
-    eu10 = allVPS[9].string.replace(' VPS', '')
-    eumid1 = allVPS[10].string.replace(' VPS', '')
-    id1 = allVPS[11].string.replace(' VPS', '')
-    sg1 = allVPS[12].string.replace(' VPS', '')
-    euovz = allVPS[13].string.replace(' VPS', '')
-    allvps = allVPS[14].string.replace(' VPS', '')
+    def get_server_info(self):
+        html_text = self.check("https://hax.co.id/data-center")
+        soup = BeautifulSoup(html_text, "html.parser")
+        zone_tags = soup("h5", class_="card-title mb-4")
+        sum_tags = soup("h1", class_="card-text")
+        vps_dict = dict(map(lambda x, y: [x.text, y.text], zone_tags, sum_tags))
+        return vps_dict
+
+    def get_data_center(self):
+        html_text = self.check("https://hax.co.id/create-vps")
+        soup = BeautifulSoup(html_text, "html.parser")
+        center_list = [x.text for x in soup("option", value=re.compile(r"^[A-Z]{2}-"))]
+        center_str = "\n".join(center_list)
+        return center_list, center_str
+
+    def main(self):
+        vps_dict = self.get_server_info()
+        vps_str = ""
+        for k, v in vps_dict.items():
+            vps_str += str(k) + "\t" + str(v) + "\n"
+        srv_stat = f"[🛰Opened Server Statistics / 已开通的服务器数据]\n{vps_str}\n\n"
+        center_list, center_str = self.get_data_center()
+        data_center = (
+            f"[🚩Currently available data centers / 当前可开通的数据中心]\n{center_str}\n\n"
+        )
+        eu_mid1 = (
+            "[♨Special Focus / 特别关注]\nEU Middle Specs (KVM + SSD) are NOT available now.\t暂时没有库存。"
+            if "EU Middle Specs" not in center_str
+            else "CHECK https://hax.co.id/create-vps NOW!!! EU Middle Specs (KVM + SSD) are available now.\t有库存！"
+        )
+        msg = srv_stat + data_center + eu_mid1
+        return msg
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="欢迎使用Hax库存查询监控bot！\n我能够帮你拿到hax官网上的库存信息，并把他们发送到你的Telegram会话中\n输入 /help 获取帮助列表\nGithub: Misaka-blog    TG: @misakanetcn")
@@ -51,8 +66,8 @@ def ping(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Pong~")
 
 def get(update, context):
-    getWebpage()
-    context.bot.send_message(chat_id=update.effective_chat.id, text="我获取到网页了！下面是Hax VPS目前库存情况：\nEU-1: "+eu1+"\nEU-2: "+eu2+"\nEU-3: "+eu3+"\nEU-4: "+eu4+"\nEU-5: "+eu5+"\nEU-6: "+eu6+"\nEU-7: "+eu7+"\nEU-8: "+eu8+"\nEU-9: "+eu9+"\nEU-10: "+eu10+"\nEU-Mid-1: "+eumid1+"\nID-1: "+id1+"\nSG-1: "+sg1+"\nEU-OpenVZ: "+euovz+"\n开通的VPS: "+allvps+"\nNote: EU1-EU10、EU-Mid-1、ID-1和SG-1为KVM区")
+    res = Hax().main()
+    context.bot.send_message(chat_id=update.effective_chat.id, text=res)
 
 Start = CommandHandler('start', start)
 Ping = CommandHandler('ping', ping)
