@@ -6,7 +6,9 @@
 
 ## 效果截图
 
-![image.png](https://s2.loli.net/2021/12/26/bdvofKVANuFiMkc.png)
+![image](https://user-images.githubusercontent.com/96560028/151803651-0d670259-e7f4-430f-9b92-3337880ccf26.png)
+
+感谢猫佬的API代码，源代码地址：https://github.com/Oreomeow/checkinpanel/blob/master/api_hax.py
 
 ## 安装教程
 
