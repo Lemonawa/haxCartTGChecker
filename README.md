@@ -23,7 +23,11 @@ pip3 install -r requirements.txt
 
 ### 运行方式
 
-建议使用`screen`工具托管本bot，运行命令为：`python3 bot.py`
+直接使用Python命令调用Bot即可
+```shell
+python3 bot.py
+```
+建议使用`screen`、`systemd`、`PM2`等工具将Bot挂在后台运行。
 
 ## 赞助我们
 
