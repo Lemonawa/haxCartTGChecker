@@ -11,8 +11,7 @@ dispatcher = updater.dispatcher
 class Hax:
     @staticmethod
     def get_ua(brower_name):
-        url = "https://ghproxy.com/https://raw.githubusercontent.com/Oreomeow/checkinpanel/master/user-agent.json"
-        useragent = choice(requests.get(url).json()[brower_name])
+        useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"
         return useragent
 
     def check(self, url):
@@ -34,7 +33,7 @@ class Hax:
     def get_data_center(self):
         html_text = self.check("https://hax.co.id/create-vps")
         soup = BeautifulSoup(html_text, "html.parser")
-        center_list = [x.text for x in soup("option", value=re.compile(r"^[A-Z]{2}-"))]
+        center_list = [x.text for x in soup("option", value=re.compile(r"^[A-Z]{2,}-"))]
         center_str = "\n".join(center_list)
         return center_list, center_str
 
