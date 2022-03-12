@@ -1,22 +1,18 @@
 # -*- coding: utf-8 -*-
 import re
-from random import choice
+
 import requests
 from bs4 import BeautifulSoup
-from telegram.ext import Updater,CommandHandler
+from telegram.ext import CommandHandler, Updater
 
 updater = Updater("<YOUR BOT TOKEN>", workers=128)
 dispatcher = updater.dispatcher
 
-class Hax:
-    @staticmethod
-    def get_ua(brower_name):
-        useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.30 Safari/537.36"
-        return useragent
 
+class Hax:
     def check(self, url):
         headers = {
-            "User-Agent": self.get_ua("Safari"),
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39",
             "Content-type": "application/json",
         }
         datas = requests.get(url, headers=headers).text
@@ -25,53 +21,82 @@ class Hax:
     def get_server_info(self):
         html_text = self.check("https://hax.co.id/data-center")
         soup = BeautifulSoup(html_text, "html.parser")
-        zone_tags = soup("h5", class_="card-title mb-4")
-        sum_tags = soup("h1", class_="card-text")
-        vps_dict = dict(map(lambda x, y: [x.text, y.text], zone_tags, sum_tags))
-        return vps_dict
+        zone_list = [x.text for x in soup("h5", class_="card-title mb-4")]
+        sum_list = [x.text for x in soup("h1", class_="card-text")]
+        vps_list = []
+        vps_dict = {}
+        vps_str = ""
+        for k, v in zip(zone_list, sum_list):
+            zone = k.split("-", 1)[0].lstrip("./")
+            sum = (
+                k.split("-", 1)[1] + "(" + v.rstrip(" VPS") + "♝)"
+                if len(k.split("-", 1)) > 1
+                else v
+            )
+            vps_list.append((zone, sum))
+        for k_v in vps_list:
+            k, v = k_v
+            vps_dict.setdefault(k, []).append(v)
+        for k, v in vps_dict.items():
+            vps_str += ">>" + k + "-" + ", ".join(v) + "\n"
+        return vps_str
 
     def get_data_center(self):
         html_text = self.check("https://hax.co.id/create-vps")
         soup = BeautifulSoup(html_text, "html.parser")
-        center_list = [x.text for x in soup("option", value=re.compile(r"^[A-Z]{2,}-"))]
-        center_str = "\n".join(center_list)
-        return center_list, center_str
+        ctr_list = [x.text for x in soup("option", value=re.compile(r"^[A-Z]{2,}-"))]
+        vir_list = [(c.split(" (")[1].rstrip(")"), c.split(" (")[0]) for c in ctr_list]
+        vir_dict = {}
+        vir_str = ""
+        for k_v in vir_list:
+            k, v = k_v
+            vir_dict.setdefault(k, []).append(v)
+        for k, v in vir_dict.items():
+            vir_str += "★" + k + "★ " + ", ".join(v) + "\n"
+        return vir_str
 
     def main(self):
-        vps_dict = self.get_server_info()
-        vps_str = ""
-        for k, v in vps_dict.items():
-            vps_str += str(k) + "\t" + str(v) + "\n"
-        srv_stat = f"[🛰Opened Server Statistics / 已开通的服务器数据]\n{vps_str}\n\n"
-        center_list, center_str = self.get_data_center()
-        data_center = (
-            f"[🚩Currently available data centers / 当前可开通的数据中心]\n{center_str}\n\n"
-        )
+        vps_str = self.get_server_info()
+        srv_stat = f"[🛰Server Stats / 已开通数据]\n{vps_str}\n"
+        vir_str = self.get_data_center()
+        data_center = f"[🚩Available Centers / 可开通区域]\n{vir_str}\n"
+        FOCUS = "[♨Special Focus / 特别关注]\n"
         eu_mid1 = (
-            "[♨Special Focus / 特别关注]\nEU Middle Specs (KVM + SSD) are NOT available now.\t暂时没有库存。"
-            if "EU Middle Specs" not in center_str
-            else "CHECK https://hax.co.id/create-vps NOW!!! EU Middle Specs (KVM + SSD) are available now.\t有库存！"
+            f"{FOCUS}EU Middle Specs (KVM + SSD) are NOT available now. 暂时没有库存。"
+            if "EU Middle Specs" not in vir_str
+            else f"{FOCUS}CHECK https://hax.co.id/create-vps NOW!!! EU Middle Specs (KVM + SSD) are available now. 有库存！"
         )
         msg = srv_stat + data_center + eu_mid1
         return msg
 
+
 def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="欢迎使用Hax库存查询监控bot！\n我能够帮你拿到hax官网上的库存信息，并把他们发送到你的Telegram会话中\n输入 /help 获取帮助列表\nGithub: Misaka-blog    TG: @misakanetcn")
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="欢迎使用Hax库存查询监控bot！\n我能够帮你拿到hax官网上的库存信息，并把他们发送到你的Telegram会话中\n输入 /help 获取帮助列表\nGithub: Misaka-blog    TG: @misakanetcn",
+    )
+
 
 def help(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="Hax 库存查询监控BOT 帮助菜单\n/help 显示本菜单\n/get 获取当前库存情况\n/ping 检测bot存活状态")
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Hax 库存查询监控BOT 帮助菜单\n/help 显示本菜单\n/get 获取当前库存情况\n/ping 检测bot存活状态",
+    )
+
 
 def ping(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Pong~")
+
 
 def get(update, context):
     res = Hax().main()
     context.bot.send_message(chat_id=update.effective_chat.id, text=res)
 
-Start = CommandHandler('start', start, run_async=True)
-Ping = CommandHandler('ping', ping, run_async=True)
-Get = CommandHandler('get', get, run_async=True)
-Help = CommandHandler('help', help, run_async=True)
+
+Start = CommandHandler("start", start, run_async=True)
+Ping = CommandHandler("ping", ping, run_async=True)
+Get = CommandHandler("get", get, run_async=True)
+Help = CommandHandler("help", help, run_async=True)
 dispatcher.add_handler(Ping)
 dispatcher.add_handler(Start)
 dispatcher.add_handler(Get)
