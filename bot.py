@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from telegram.ext import Updater,CommandHandler
 
-updater = Updater("<YOUR BOT TOKEN>")
+updater = Updater("<YOUR BOT TOKEN>", workers=128)
 dispatcher = updater.dispatcher
 
 class Hax:
@@ -68,10 +68,10 @@ def get(update, context):
     res = Hax().main()
     context.bot.send_message(chat_id=update.effective_chat.id, text=res)
 
-Start = CommandHandler('start', start)
-Ping = CommandHandler('ping', ping)
-Get = CommandHandler('get', get)
-Help = CommandHandler('help', help)
+Start = CommandHandler('start', start, run_async=True)
+Ping = CommandHandler('ping', ping, run_async=True)
+Get = CommandHandler('get', get, run_async=True)
+Help = CommandHandler('help', help, run_async=True)
 dispatcher.add_handler(Ping)
 dispatcher.add_handler(Start)
 dispatcher.add_handler(Get)
