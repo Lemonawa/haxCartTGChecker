@@ -11,7 +11,7 @@ dispatcher = updater.dispatcher
 class Hax:
     @staticmethod
     def get_ua(brower_name):
-        useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"
+        useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.30 Safari/537.36"
         return useragent
 
     def check(self, url):
