@@ -15,9 +15,8 @@
 先去botfather获取bot token，然后在vps内使用一下命令安装bot
 
 ```shell
-apt-get update
-apt-get upgrade -y
-apt install -y python3 python3-pip
+apt-get upgrade -y # CentOS：yum update -y
+apt install -y python3 python3-pip # CentOS: yun install -y python3 python3-pip
 pip3 install -r requirements.txt
 ```
 
