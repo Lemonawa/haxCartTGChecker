@@ -15,8 +15,7 @@ class Hax:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39",
             "Content-type": "application/json",
         }
-        datas = requests.get(url, headers=headers).text
-        return datas
+        return requests.get(url, headers=headers).text
 
     def get_server_info(self):
         html_text = self.check("https://hax.co.id/data-center")
@@ -25,7 +24,6 @@ class Hax:
         sum_list = [x.text for x in soup("h1", class_="card-text")]
         vps_list = []
         vps_dict = {}
-        vps_str = ""
         for k, v in zip(zone_list, sum_list):
             zone = k.split("-", 1)[0].lstrip("./")
             sum = (
@@ -37,9 +35,7 @@ class Hax:
         for k_v in vps_list:
             k, v = k_v
             vps_dict.setdefault(k, []).append(v)
-        for k, v in vps_dict.items():
-            vps_str += ">>" + k + "-" + ", ".join(v) + "\n"
-        return vps_str
+        return "".join(f">>{k}-" + ", ".join(v) + "\n" for k, v in vps_dict.items())
 
     def get_data_center(self):
         html_text = self.check("https://hax.co.id/create-vps")
@@ -47,13 +43,10 @@ class Hax:
         ctr_list = [x.text for x in soup("option", value=re.compile(r"^[A-Z]{2,}-"))]
         vir_list = [(c.split(" (")[1].rstrip(")"), c.split(" (")[0]) for c in ctr_list]
         vir_dict = {}
-        vir_str = ""
         for k_v in vir_list:
             k, v = k_v
             vir_dict.setdefault(k, []).append(v)
-        for k, v in vir_dict.items():
-            vir_str += "★" + k + "★ " + ", ".join(v) + "\n"
-        return vir_str
+        return "".join(f"★{k}★ " + ", ".join(v) + "\n" for k, v in vir_dict.items())
 
     def main(self):
         vps_str = self.get_server_info()
@@ -66,8 +59,7 @@ class Hax:
             if "EU Middle Specs" not in vir_str
             else f"{FOCUS}CHECK https://hax.co.id/create-vps NOW!!! EU Middle Specs (KVM + SSD) are available now. 有库存！"
         )
-        msg = srv_stat + data_center + eu_mid1
-        return msg
+        return srv_stat + data_center + eu_mid1
 
 
 def start(update, context):
